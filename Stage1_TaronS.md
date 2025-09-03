@@ -40,7 +40,7 @@ The app will address several challengers readers face today:
 3) Flexible access to books: Not everyone wants to (or is able to) own or keep everything they read. Selling, renting, exchanging, or receiving books as give always provides cost and space effective options for readers.
 
 
-    Scope of MVP
+        Scope of MVP
 1. User management 
 
 Register/login (username, email, password).
