@@ -67,9 +67,13 @@ By condition (new, used, etc.)
 
 Nice to have:
 bundles for books - multiple books in a single offer
+
 wishlist - user posts what books they would be interested in
+
 notifications - user gets notification if someone is offering a book in their wishlist
+
 some kind of history of transactions
+
 reviewing users and books
 
 Stories
@@ -79,9 +83,13 @@ Stories
 --As a user, I can view my profile (check my personal information)
 
 --As a user, I can post a book with title, author, year, condition, and type of transaction.
+
 --As a user, I can edit my book listing (to update details)
+
 --As a user, I can delete my book listing.
+
 --As a user, I can view all available offers for books.
+
 --As a user, I can categorize books by transaction type (Sell, Rent, Exchange, Giveaway).
 
 --As a user, I can request a book from another user, so that I can buy, rent, exchange, or claim it.
