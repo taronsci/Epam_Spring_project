@@ -65,7 +65,7 @@ By author (partial match)
 By type of transaction (SELL, RENT, EXCHANGE, GIVEAWAY)
 By condition (new, used, etc.)
 
-Nice to have:
+              Nice to have
 bundles for books - multiple books in a single offer
 
 wishlist - user posts what books they would be interested in
@@ -76,11 +76,16 @@ some kind of history of transactions
 
 reviewing users and books
 
-Stories
+              Stories
+
 --As a user, I can register with my email and password.
+
 --As a user, I can log in with my credentials if I am in the system
+
 --As a user, I can update my profile information.
+
 --As a user, I can view my profile (check my personal information)
+
 
 --As a user, I can post a book with title, author, year, condition, and type of transaction.
 
@@ -92,14 +97,23 @@ Stories
 
 --As a user, I can categorize books by transaction type (Sell, Rent, Exchange, Giveaway).
 
+
 --As a user, I can request a book from another user, so that I can buy, rent, exchange, or claim it.
+
 --As a book owner, I can  accept or decline a request.
+
 --As a user, I can see the status of my requests, so that I know whether they were accepted or declined.
+
 --As a book owner, I want the book to be marked as unavailable when a request is accepted.
 
+
 --As a user, I can search books by title, author, etc.
+
 --As a user, I can filter books by type of transaction.
+
 --As a user, I want to filter books by year.
+
 --As a user, I want to filter books by genre.
+
 --As a user, I want to filter books by condition.
 
