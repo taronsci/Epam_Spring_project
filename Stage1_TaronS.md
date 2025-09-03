@@ -40,32 +40,46 @@ The app will address several challengers readers face today:
 3) Flexible access to books: Not everyone wants to (or is able to) own or keep everything they read. Selling, renting, exchanging, or receiving books as give always provides cost and space effective options for readers.
 
 
-Scope of MVP:
+    Scope of MVP
 1. User management 
+
 Register/login (username, email, password).
+
 CRUD for user profile.
 
 2. Book listings
+
 CRUD for books: title, author, year, genre, condition, type of transaction (sth like this)
 
 Types of transaction are separate categories:
+
 Sell (with price field)
+
 Rent (with rental duration field)
+
 Exchange (mark as exchangeable)
+
 Giveaway (mark as free)
 
 3. Requests/transactions
+
 Allow one user to request a book from another (e.g., request to buy, rent, exchange, or accept giveaway).
+
 Book owner can accept or decline the request.
+
 Once accepted, mark the book as "unavailable" (basic transaction status).
 
 4. Search/Filter 
+
 By title (partial match)
+
 By author (partial match)
+
 By type of transaction (SELL, RENT, EXCHANGE, GIVEAWAY)
+
 By condition (new, used, etc.)
 
-              Nice to have
+    Nice to have
 bundles for books - multiple books in a single offer
 
 wishlist - user posts what books they would be interested in
@@ -76,7 +90,7 @@ some kind of history of transactions
 
 reviewing users and books
 
-              Stories
+    Stories
 
 --As a user, I can register with my email and password.
 
