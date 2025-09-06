@@ -100,6 +100,8 @@ reviewing users and books
 
 --As a user, I can view my profile (check my personal information)
 
+--As a user, I can browse listings without logging in.
+
 
 --As a user, I can post a book with title, author, year, condition, and type of transaction.
 
