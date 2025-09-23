@@ -2,6 +2,7 @@ package com.booky.demo.service;
 
 import com.booky.demo.dao.BookDAO;
 import com.booky.demo.dao.BookListingRepository;
+import com.booky.demo.dao.UserDAO;
 import com.booky.demo.dto.BookListingDTO;
 import com.booky.demo.model.*;
 import jakarta.transaction.Transactional;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Service;
 public class BookListingService {
 
     private final BookDAO bookDAO;
+    private final UserDAO userDAO;
 
     private final BookListingRepository bookListingRepository;
 
-    public BookListingService(BookDAO bookbookDAO,BookListingRepository repository) {
+    public BookListingService(BookDAO bookbookDAO,BookListingRepository repository, UserDAO userDAO) {
         this.bookDAO = bookbookDAO;
         this.bookListingRepository = repository;
+        this.userDAO = userDAO;
     }
 
     @Transactional
@@ -33,20 +36,20 @@ public class BookListingService {
         listing.setTransaction_type(dto.transaction_type());
         listing.setStatus("PENDING");
 
-        BookListing saved = bookListingRepository.save(listing);
+        BookListing saved = bookListingRepository.save(listing);    //maybe reassign to listing
         System.out.println("listing created with type "+ dto.transaction_type());
 
         if (dto.price() != null) {
             Details details = new Details();
             details.setBookListing(listing);
             details.setPrice(dto.price());
-            listing.setDetails(details);
+            listing.setDetails(details);    //maybe this doesn't stay.
 
-            if (dto.rentalDuration() != null || dto.rentalStartDate() != null) {
+            if (dto.rentalDuration() != null ) { //     || dto.rentalStartDate() != null
                 RentDetails rentDetails = new RentDetails();
                 rentDetails.setDetails(details);
                 rentDetails.setRentalDuration(dto.rentalDuration());
-                rentDetails.setRentalStartDate(dto.rentalStartDate());
+//                rentDetails.setRentalStartDate(dto.rentalStartDate());
                 details.setRentDetails(rentDetails);
             }
         }
@@ -71,12 +74,13 @@ public class BookListingService {
                 listing.getBook_id(),
                 bookDAO.findBookById(listing.getBook_id()),
                 listing.getOwner_id(),
+                userDAO.getUsernameById(listing.getOwner_id()),
                 listing.getCondition(),
                 listing.getTransaction_type(),
                 listing.getStatus(),
                 details != null ? details.getPrice() : null,
-                rentDetails != null ? rentDetails.getRentalDuration() : null,
-                rentDetails != null ? rentDetails.getRentalStartDate() : null
+                rentDetails != null ? rentDetails.getRentalDuration() : null
+//                rentDetails != null ? rentDetails.getRentalStartDate() : null
         );
     }
 }

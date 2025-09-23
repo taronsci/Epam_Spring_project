@@ -21,7 +21,7 @@ public class UserService {
 
     @Transactional
     public Integer register(User user) {
-        Integer id = userDAO.findByUsername(user.getUsername());
+        Integer id = userDAO.getIdByUsername(user.getUsername());
         if(id == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword())); //encode password
             id = userDAO.register(user);    //register user
@@ -32,7 +32,7 @@ public class UserService {
 
     @Transactional
     public Integer login(User user) {
-        Integer id = userDAO.findByUsername(user.getUsername());
+        Integer id = userDAO.getIdByUsername(user.getUsername());
         if(id == null)
             return -1; //username not found
 

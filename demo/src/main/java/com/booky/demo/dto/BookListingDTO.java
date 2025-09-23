@@ -6,17 +6,21 @@ package com.booky.demo.dto;
 
 import com.booky.demo.model.Book;
 
-import java.time.LocalDate;
 
 public record BookListingDTO(
     Integer id,
+
     Integer bookId,
     Book book,
+
     Integer ownerId,
+    String ownerUsername,
+
     String condition,
     String transaction_type,
     String status,
     Double price,
-    Integer rentalDuration,
-    LocalDate rentalStartDate
+
+    Integer rentalDuration
+//    LocalDate rentalStartDate
 ) {}

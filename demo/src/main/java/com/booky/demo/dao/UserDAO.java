@@ -38,7 +38,7 @@ public class UserDAO {
         return key.intValue();
     }
 
-    public Integer findByUsername(String username){
+    public Integer getIdByUsername(String username){
         String sql = "SELECT id FROM users WHERE username = ?";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, username);
@@ -49,6 +49,15 @@ public class UserDAO {
 
     public String getPasswordHashById(Integer id){
         String sql = "SELECT password FROM users WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public String getUsernameById(Integer id){
+        String sql = "SELECT username FROM users WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, String.class, id);
         } catch (EmptyResultDataAccessException e) {

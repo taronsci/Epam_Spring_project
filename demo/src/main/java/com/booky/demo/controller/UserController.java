@@ -16,7 +16,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //check if this works, password hashing part!
     @PostMapping("/signup")
     public ResponseEntity<?> create(@RequestBody User user) {
         System.out.println("signing up!");
@@ -27,7 +26,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userId);
     }
 
-    //check if this works, password hashing !
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         Integer userId = userService.login(user);
