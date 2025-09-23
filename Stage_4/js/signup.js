@@ -1,4 +1,6 @@
-document.getElementById("signupForm").addEventListener("submit", function(event) {
+const signupForm = document.getElementById("signupForm");
+
+document.getElementById("signupForm").addEventListener("submit", async function(event) {
   event.preventDefault();
 
   const username = document.getElementById("username").value.trim();
@@ -17,7 +19,45 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
   }
 
   alert(`Signup attempt:\nUsername: ${username}\nEmail: ${email}`);
-  // TODO: Replace with API call to backend Spring signup
+
+  // Grab user data
+  const user = {
+    username: username,
+    email: email,
+    password: password
+  };
+
+  try{
+    const userResponse = await fetch("http://localhost:8080/api/user/signup", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(user)
+    });
+    
+    if (userResponse.status === 201) {
+      const userID = await userResponse.json();
+
+      alert(`User created with ID ${userID}`);
+
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("username", username);
+      localStorage.setItem("email", email);
+      localStorage.setItem("userID", userID);
+
+      goToDashboard();
+    } 
+    else if (userResponse.status === 409) {
+      alert("Username already exists!");
+    }
+    alert("here!");
+
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  }
+
+  // alert(`User "${username}" registered successfully!`);
+  // signupForm.reset();
 });
 
 function goToDashboard() {

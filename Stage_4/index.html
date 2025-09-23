@@ -36,35 +36,24 @@
         <option value="EXCHANGE">Exchange</option>
         <option value="GIVEAWAY">Giveaway</option>
       </select>
-      <button onclick="performSearch()">Search</button>
+      <button id="search" onclick="performSearch()">Search</button>
     </section>
 
     <!-- Book listings grid -->
-    <main class="results">
+    <main id="resultsContainer" class="results">
       <div class="book-card">
         <h3>1984</h3>
         <p><strong>Author:</strong> George Orwell</p>
         <p><strong>Condition:</strong> Used</p>
         <p><strong>Type:</strong> Sell ($10)</p>
-        <button onclick="requestBook(1)">Request</button>
-      </div>
-
-      <div class="book-card">
-        <h3>The Hobbit</h3>
-        <p><strong>Author:</strong> J.R.R. Tolkien</p>
-        <p><strong>Condition:</strong> New</p>
-        <p><strong>Type:</strong> Giveaway (Free)</p>
-        <button onclick="requestBook(2)">Request</button>
-      </div>
-
-      <div class="book-card">
-        <h3>Brave New World</h3>
-        <p><strong>Author:</strong> Aldous Huxley</p>
-        <p><strong>Condition:</strong> Used</p>
-        <p><strong>Type:</strong> Rent (14 days)</p>
-        <button onclick="requestBook(3)">Request</button>
       </div>
     </main>
+
+    <div class="pagination">
+      <button onclick="prevPage()" id="prevBtn">Prev</button>
+      <span id="pageInfo">1 of 5</span>
+      <button onclick="nextPage()" id="nextBtn">Next</button>
+    </div>
 
     <!-- Register Book Modal -->
     <div id="registerModal" class="modal">

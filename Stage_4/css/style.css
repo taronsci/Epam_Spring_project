@@ -180,16 +180,18 @@ body.dashboard {
 /* Book listings grid (matrix) */
 .results {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  padding: 0 1rem 2rem 1rem;
+  grid-template-columns: repeat(3, 1fr); /* repeat(auto-fit, minmax(220px, 1fr)) */
+  gap: 20px; /* 1rem*/
+  padding: 20px; /*0 1rem 2rem 1rem*/
 }
 
 .book-card {
   background: #fff;
-  padding: 1rem;
+  border: 1px solid #ddd; /*added*/
+  padding: 15px; /*1rem*/
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center; /*added*/
 }
 
 .book-card h3 {
@@ -306,6 +308,41 @@ body.dashboard {
   background: #c82333;
 }
 
+/* Next prev buttons */
+.pagination {
+  display: flex;
+  justify-content: center; /* center buttons */
+  gap: 10px; /* space between buttons */
+  margin: 20px 0;
+}
 
+.pagination button {
+  padding: 6px 14px; /* smaller than normal buttons */
+  font-size: 0.9rem;
+  border: 1px solid #2575fc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #2575fc;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination button:hover {
+  background-color: #2575fc;
+  color: #fff;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #aaa;
+  color: #aaa;
+  background-color: #f9f9f9;
+}
+#pageInfo {
+  min-width: 80px;
+  text-align: center;
+}
 
 
