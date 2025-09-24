@@ -7,14 +7,16 @@ import java.time.LocalDateTime;
 
 public record BookRequestDTO(
     Integer id,
+
+    String requesterUsername,
     Integer requesterId,
     Integer listingId,
     String status,
 
     Book book,
-    String ownerId,
+    Integer ownerId, //was String
 
-    LocalDateTime requestAt,
+    LocalDateTime createdAt,
 
     LocalDate rentalStartDate
 ){}

@@ -30,11 +30,11 @@
           </form>
         </section>
 
-        <!-- Books Posted Section -->
+        <!-- Book Listings Posted Section -->
         <section class="books-posted">
-          <h2>My Book Offers</h2>
-          <div class="results">
-            <!-- Static book card -->
+          <h2>My Book Listings</h2>
+          <div id="myListings" class="results">
+            <!-- Static book card ------- Done-->
             <div class="book-card">
               <h3>1984</h3>
               <p><strong>Type:</strong> Sell ($10)</p>
@@ -43,20 +43,30 @@
               <button class="delete-btn">Delete</button>
             </div>
           </div>
+          <div class="pagination">
+            <button onclick="prevPageL()" id="prevBtn">Prev</button>
+            <span id="page1Info">1 of 5</span>
+            <button onclick="nextPageL()" id="nextBtn">Next</button>
+          </div>
         </section>
 
         <!-- Requests Received Section -->
         <section class="requests-received">
-          <h2>Requests</h2>
-          <div class="results">
+          <h2>Requests for my Books</h2>
+          <div id="requests" class="results">
+            <!-- Static book(request) card ----- Done-->
             <div class="book-card">
               <h3>The Hobbit</h3>
               <p><strong>Requester:</strong> Alice</p>
               <p><strong>Transaction:</strong> Giveaway</p>
               <p><strong>Status:</strong> Pending</p>
-              <button class="accept-btn">Accept</button>
-              <button class="decline-btn">Decline</button>
+              <!-- accept and decline buttons -->
             </div>
+          </div>
+          <div class="pagination">
+            <button onclick="prevPageR()" id="prevBtnR">Prev</button>
+            <span id="pageInfoR">1 of 5</span>
+            <button onclick="nextPageR()" id="nextBtnR">Next</button>
           </div>
         </section>
 

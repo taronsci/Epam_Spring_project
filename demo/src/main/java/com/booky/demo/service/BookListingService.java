@@ -63,7 +63,14 @@ public class BookListingService {
         return listings.map(this::toDTO);
     }
 
-    public BookListingDTO toDTO(BookListing listing) {
+    @Transactional
+    public Page<BookListingDTO> getBookListingsById(int ownerId, int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<BookListing> listings = bookListingRepository.findByIdWithDetails(ownerId, pageable);
+        return listings.map(this::toDTO);
+    }
+
+    private BookListingDTO toDTO(BookListing listing) {
         Details details = listing.getDetails();
         RentDetails rentDetails =  null;
         if(listing.getTransaction_type().equals("RENT"))
@@ -83,5 +90,6 @@ public class BookListingService {
 //                rentDetails != null ? rentDetails.getRentalStartDate() : null
         );
     }
+
 }
 

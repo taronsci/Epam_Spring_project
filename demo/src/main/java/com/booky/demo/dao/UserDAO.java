@@ -22,7 +22,6 @@ public class UserDAO {
     }
 
     public Integer register(User user) {
-
         String sql = "INSERT INTO users (username, email, password) VALUES(?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();

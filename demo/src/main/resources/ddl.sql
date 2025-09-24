@@ -51,6 +51,7 @@ CREATE TABLE bookrequest (
     requester_id INTEGER NOT NULL,
     listing_id INTEGER NOT NULL,
 	status VARCHAR(50) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 -- 	PRIMARY KEY(requester_id, listing_id),
     CONSTRAINT fk_bookrequest_users FOREIGN KEY (requester_id) REFERENCES users(id),
 	CONSTRAINT fk_bookrequest_booklisting FOREIGN KEY (listing_id) REFERENCES booklisting(id)

@@ -344,5 +344,13 @@ body.dashboard {
   min-width: 80px;
   text-align: center;
 }
+#page1Info {
+  min-width: 80px;
+  text-align: center;
+}
+#pageInfoR {
+  min-width: 80px;
+  text-align: center;
+}
 
 

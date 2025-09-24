@@ -102,7 +102,7 @@ async function requestBook(bookListingDTO) {
       requesterId: localStorage.getItem("userID"),
       listingId: bookListingDTO.id,
 
-      requestAt: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
     alert("before try");
     try {
@@ -115,6 +115,7 @@ async function requestBook(bookListingDTO) {
         alert("after post");
 
         if (!response.ok) {
+            alert(response.status)
             if (response.status === 401) 
               return alert("Unauthorized. Please log in again.");
             throw new Error(await response.text());

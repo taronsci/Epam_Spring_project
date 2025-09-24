@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "bookrequest")
 @Getter
@@ -23,5 +25,11 @@ public class BookRequest {
 //    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+//    @OneToMany(mappedBy = "bookRequest", fetch = FetchType.LAZY)
+//    private User user;
 
 }

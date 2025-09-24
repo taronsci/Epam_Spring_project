@@ -28,8 +28,14 @@ public class BookListingController {
     }
 
     @GetMapping
-    public PagedModel<EntityModel<BookListingDTO>> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
+    public PagedModel<EntityModel<BookListingDTO>> getAllBookListings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
         Page<BookListingDTO> listingPage = bookListingService.getAllListings(page, size);
+        return assembler.toModel(listingPage);
+    }
+
+    @GetMapping("/{ownerId}")
+    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
+        Page<BookListingDTO> listingPage = bookListingService.getBookListingsById(ownerId, page, size);
         return assembler.toModel(listingPage);
     }
 }
