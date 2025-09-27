@@ -21,21 +21,39 @@ public class BookListingController {
         this.assembler = assembler;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Integer> createListing(@RequestBody BookListingDTO listingDTO) {
         Integer listingId = bookListingService.createListing(listingDTO);
         return ResponseEntity.ok(listingId);
     }
 
     @GetMapping
-    public PagedModel<EntityModel<BookListingDTO>> getAllBookListings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
+    public PagedModel<EntityModel<BookListingDTO>> getAllBookListings(@RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "9") int size) {
         Page<BookListingDTO> listingPage = bookListingService.getAllListings(page, size);
         return assembler.toModel(listingPage);
     }
 
     @GetMapping("/{ownerId}")
-    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
+    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(@PathVariable int ownerId,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "9") int size) {
         Page<BookListingDTO> listingPage = bookListingService.getBookListingsById(ownerId, page, size);
+        return assembler.toModel(listingPage);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteListing(@PathVariable int id) {
+        bookListingService.deleteListing(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(@RequestParam(defaultValue = "") String query,
+                                                                        @RequestParam String type,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "9") int size) {
+        Page<BookListingDTO> listingPage = bookListingService.filterBookListings(query, type, page, size);
         return assembler.toModel(listingPage);
     }
 }

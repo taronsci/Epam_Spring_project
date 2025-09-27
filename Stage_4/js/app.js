@@ -1,16 +1,3 @@
-document.getElementById("search").addEventListener("click", ()=> {
-  fetch('http://localhost:8080/hello')
-  .then(response => response.text())
-  .then(data => {
-    alert("response from backend: "+data);
-  })
-  .catch(error =>{
-    alert("error: "+ error);
-    console.error('Error calling backend:', error);
-  });
-})
-
-
 // Global variable
 let isLoggedIn = false;
 
@@ -50,7 +37,7 @@ async function loadBooks(page = 0) {
         const data = await response.json(); // array of bookListingDTO objects
 
         const resultsContainer = document.getElementById("resultsContainer");
-        resultsContainer.innerHTML = ""; // clear placeholders
+        resultsContainer.innerHTML = ""; 
 
         // HATEOAS PagedModel: actual items are in _embedded.bookListingDTOList
         const books = data._embedded?.bookListingDTOList || [];
@@ -63,7 +50,7 @@ async function loadBooks(page = 0) {
                 <h3>${bookListingDTO.book.title}</h3>
                 <p><strong>Author:</strong> ${bookListingDTO.book.author}</p>
                 <p><strong>Condition:</strong> ${bookListingDTO.condition}</p>
-                <p><strong>Type:</strong> ${bookListingDTO.transaction_type}${bookListingDTO.price ? ` ($${bookListingDTO.price})` : ''}</p>
+                <p><strong>Type:</strong> ${bookListingDTO.transactionType}${bookListingDTO.price ? ` ($${bookListingDTO.price})` : ''}</p>
             `;
             
             const button = document.createElement("button");
@@ -97,27 +84,23 @@ async function requestBook(bookListingDTO) {
         return;
     }
     
-    // request data
     const request = {
       requesterId: localStorage.getItem("userID"),
       listingId: bookListingDTO.id,
-
       createdAt: new Date().toISOString()
     };
-    alert("before try");
     try {
-        alert("before post");
         const response = await fetch("http://localhost:8080/api/request", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(request)
+            body: JSON.stringify(request),
+            credentials: "include"
         });
-        alert("after post");
 
         if (!response.ok) {
-            alert(response.status)
             if (response.status === 401) 
               return alert("Unauthorized. Please log in again.");
+
             throw new Error(await response.text());
         }
 
@@ -145,22 +128,74 @@ function goToSignup(){
   window.location.href = "signup.html";
 }
 
-function performSearch() {
+//searching 
+async function performSearch(page = 0) {
   const query = document.getElementById("searchBar").value;
-  const filter = document.getElementById("filterType").value;
-  alert(`Searching for "${query}" with filter: ${filter}`);
-  // TODO: Connect to backend API for real search
+  const type = document.getElementById("filterType").value;
+
+  try {
+      const url = new URL('http://localhost:8080/api/listing/search');
+        url.searchParams.append('query', query);
+        url.searchParams.append('type', type);
+        url.searchParams.append('page', page);
+        url.searchParams.append('size', pageSize);
+
+        // Perform GET request
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse JSON response
+        const data = await response.json();
+
+        const resultsContainer = document.getElementById("resultsContainer");
+        resultsContainer.innerHTML = ""; 
+
+        // HATEOAS PagedModel: actual items are in _embedded.bookListingDTOList
+        const books = data._embedded?.bookListingDTOList || [];
+
+        books.forEach(bookListingDTO => {
+            const card = document.createElement("div");
+            card.className = "book-card";
+
+            card.innerHTML = `
+                <h3>${bookListingDTO.book.title}</h3>
+                <p><strong>Author:</strong> ${bookListingDTO.book.author}</p>
+                <p><strong>Condition:</strong> ${bookListingDTO.condition}</p>
+                <p><strong>Type:</strong> ${bookListingDTO.transactionType}${bookListingDTO.price ? ` ($${bookListingDTO.price})` : ''}</p>
+            `;
+            
+            const button = document.createElement("button");
+            button.textContent = "Request book";
+            button.addEventListener("click", () => requestBook(bookListingDTO));
+            card.appendChild(button);
+
+            resultsContainer.appendChild(card);
+        });
+        
+        // Update pagination info
+        currentPage = data.page?.number || 0;
+        const totalPages = data.page?.totalPages || 1;
+
+        // Enable/disable next/prev buttons
+        document.getElementById("prevBtn").disabled = currentPage <= 0;
+        document.getElementById("nextBtn").disabled = currentPage >= totalPages - 1;
+
+        document.getElementById("pageInfo").textContent = `${currentPage + 1} of ${totalPages}`;
+
+        // TODO: Render results in the UI, maybe this is better !!
+        // displaySearchResults(data);
+
+    } catch (err) {
+        console.error("Failed to perform search:", err);
+    }
 }
-
-// function registerBook() {
-//   if(!isLoggedIn){
-//     alert("Please log in to register a book.");
-//     return;
-//   }
-//   // Show register modal if logged in
-//   document.getElementById("registerModal").style.display = "block";
-// }
-
 
 
 function goToProfile() {
@@ -232,25 +267,24 @@ form.addEventListener("submit", async function(e) {
     }
 
     const bookId = await bookResponse.json();
-    alert(`Book id is ${bookId}`);
 
     const listing = {
       bookId: bookId,
       ownerId: localStorage.getItem("userID"),
       condition: document.getElementById("condition").value,
-      transaction_type: transaction,
+      transactionType: transaction,
       price: priceInput.value || null,
       rentalDuration: rentalInput.value || null,
     };
 
-    const listingResponse = await fetch("http://localhost:8080/api/listing", {
+    const listingResponse = await fetch("http://localhost:8080/api/listing/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(listing)
     });
 
     if(listingResponse.status === 201){
-      alert(`Book "${book.title}" registered successfully!`);
+      alert(`Book "${book.title}" with id "${bookId}" registered successfully!`);
       modal.style.display = "none";
       form.reset();
     }
@@ -263,10 +297,6 @@ form.addEventListener("submit", async function(e) {
     console.error(err);
     alert(err);
   }
-
-
-  console.log("Book registered:", book);
-  alert(`Book "${book.title}" registered successfully!`);
 
   modal.style.display = "none";
   form.reset();

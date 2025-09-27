@@ -6,7 +6,6 @@ package com.booky.demo.dto;
 
 import com.booky.demo.model.Book;
 
-
 public record BookListingDTO(
     Integer id,
 
@@ -17,10 +16,9 @@ public record BookListingDTO(
     String ownerUsername,
 
     String condition,
-    String transaction_type,
+    String transactionType,
     String status,
     Double price,
 
     Integer rentalDuration
-//    LocalDate rentalStartDate
 ) {}

@@ -8,10 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class BookDAO {
@@ -42,26 +41,24 @@ public class BookDAO {
 
     public boolean findById(Integer bookId){
         String sql = "SELECT COUNT(*) FROM book WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, bookId);
-        return count != null && count > 0;
+        Optional<Integer> count = Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class, bookId));
+        return count.isPresent() && count.get() > 0;
     }
 
-    public Integer findByTitleAndAuthor(String title, String author){
+    public Optional<Integer> findByTitleAndAuthor(String title, String author){
         String sql = "SELECT id FROM book WHERE title = ? AND author = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, Integer.class, title, author);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class, title, author));
         } catch (EmptyResultDataAccessException e) {
-            System.out.println("title author not found.");
-            return null;
+            return Optional.empty();
         }
     }
-    public Book findBookById(Integer bookId){
+    public Optional<Book> findBookById(Integer bookId){
         String sql = "SELECT * FROM book WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Book.class), bookId);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Book.class), bookId));
         } catch (EmptyResultDataAccessException e) {
-            System.out.println("id not found.");
-            return null;
+            return Optional.empty();
         }
     }
 

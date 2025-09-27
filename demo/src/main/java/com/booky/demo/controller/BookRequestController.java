@@ -1,6 +1,7 @@
 package com.booky.demo.controller;
 
 import com.booky.demo.dto.BookRequestDTO;
+import com.booky.demo.model.RequestStatus;
 import com.booky.demo.service.BookRequestService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -8,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+//import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/request")
@@ -28,9 +30,27 @@ public class BookRequestController {
 
     @GetMapping("/{ownerId}")
     public PagedModel<EntityModel<BookRequestDTO>> getBooksRequestsById(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
-        System.out.println("this is good");
-
         Page<BookRequestDTO> requestPage = bookRequestService.getBookRequestsById(ownerId, page, size);
         return assembler.toModel(requestPage);
+    }
+
+    @GetMapping("/my/{ownerId}")
+    public PagedModel<EntityModel<BookRequestDTO>> getMyRequests(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Page<BookRequestDTO> requestPage = bookRequestService.getMyRequests(ownerId, page, size);
+        return assembler.toModel(requestPage);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRequest(@PathVariable int id) {
+        boolean deleted = bookRequestService.deleteRequest(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/status/{accepted}")
+    public ResponseEntity<Void> updateStatus(@PathVariable int id, @PathVariable String accepted) {
+        boolean isAccepted = Boolean.parseBoolean(accepted);
+        RequestStatus status = isAccepted ? RequestStatus.ACCEPTED : RequestStatus.REJECTED;
+        boolean updated = bookRequestService.updateStatus(id, status);
+        return updated ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

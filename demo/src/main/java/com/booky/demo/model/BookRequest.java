@@ -3,6 +3,8 @@ package com.booky.demo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
 
@@ -22,14 +24,12 @@ public class BookRequest {
     @Column(name = "listing_id", nullable = false)
     private Integer listingId;
 
-//    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "request_status")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private RequestStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-//    @OneToMany(mappedBy = "bookRequest", fetch = FetchType.LAZY)
-//    private User user;
 
 }

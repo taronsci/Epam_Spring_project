@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Details {
     @Id
     @Column(name = "listing_id")
-    private Integer id; // same as BookListing.id
+    private Integer id;
 
     @MapsId
     @OneToOne

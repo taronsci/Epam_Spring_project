@@ -4,7 +4,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  if (!(username || password)) {
+  if (!(username && password)) {
     alert("Please fill in all fields!");
     return;
   } 
@@ -17,6 +17,17 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     };
 
   try{
+    // const userResponse = await fetch("http://localhost:8080/api/user/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded"
+    //   },
+    //   body: new URLSearchParams({
+    //     username: user.username,
+    //     password: user.password
+    //   }),
+    //   credentials: "include"
+    // });
     const userResponse = await fetch("http://localhost:8080/api/user/login", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -26,23 +37,16 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     if (userResponse.status === 200) {
       const userID = await userResponse.json();
 
-      // Successful login, store token/session as needed
       alert(`User "${username}" registered successfully!`);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", username);
       localStorage.setItem("userID", userID);
-      // if (data.token) localStorage.setItem("token", data.token);
-      
-      //could get email from backend?
 
       goToDashboard();
     } 
-    else if (userResponse.status === 404) {
-      alert("Username not registered");
-    } 
     else if (userResponse.status === 401) {
-      alert("Incorrect password!");
-    }
+      alert("Incorrect username or password!");
+    } 
 
   } catch (err) {
     console.error(err);

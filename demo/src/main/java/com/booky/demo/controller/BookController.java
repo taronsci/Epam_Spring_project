@@ -20,5 +20,4 @@ public class BookController {
         Integer bookId = bookService.save(book);
         return ResponseEntity.ok(bookId);
     }
-
 }

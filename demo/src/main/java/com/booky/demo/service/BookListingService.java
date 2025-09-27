@@ -28,28 +28,25 @@ public class BookListingService {
 
     @Transactional
     public Integer createListing(BookListingDTO dto) {
-        System.out.println("creating listing");
         BookListing listing = new BookListing();
-        listing.setBook_id(dto.bookId());
-        listing.setOwner_id(dto.ownerId());
-        listing.setCondition(dto.condition());
-        listing.setTransaction_type(dto.transaction_type());
-        listing.setStatus("PENDING");
+        listing.setBookId(dto.bookId());
+        listing.setOwnerId(dto.ownerId());
+        listing.setCondition(BookCondition.valueOf(dto.condition()));
+        listing.setTransactionType(TransactionType.valueOf(dto.transactionType()));
+        listing.setStatus(RequestStatus.PENDING);
 
-        BookListing saved = bookListingRepository.save(listing);    //maybe reassign to listing
-        System.out.println("listing created with type "+ dto.transaction_type());
+        BookListing saved = bookListingRepository.save(listing);
 
         if (dto.price() != null) {
             Details details = new Details();
             details.setBookListing(listing);
             details.setPrice(dto.price());
-            listing.setDetails(details);    //maybe this doesn't stay.
+            listing.setDetails(details);
 
-            if (dto.rentalDuration() != null ) { //     || dto.rentalStartDate() != null
+            if (dto.rentalDuration() != null ) {
                 RentDetails rentDetails = new RentDetails();
                 rentDetails.setDetails(details);
                 rentDetails.setRentalDuration(dto.rentalDuration());
-//                rentDetails.setRentalStartDate(dto.rentalStartDate());
                 details.setRentDetails(rentDetails);
             }
         }
@@ -70,26 +67,40 @@ public class BookListingService {
         return listings.map(this::toDTO);
     }
 
+    @Transactional
+    public Page<BookListingDTO> filterBookListings(String query, String type, int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        if(type.equals("ALL"))
+            type = null;
+        if(query.isEmpty())
+            query = null;
+
+        Page<BookListing> listings = bookListingRepository.searchBooks(query, type, pageable);
+        return listings.map(this::toDTO);
+    }
+
+    public void deleteListing(int id){
+        bookListingRepository.deleteById(id);
+    }
+
     private BookListingDTO toDTO(BookListing listing) {
         Details details = listing.getDetails();
         RentDetails rentDetails =  null;
-        if(listing.getTransaction_type().equals("RENT"))
+        if(listing.getTransactionType().equals(TransactionType.RENT))
             rentDetails = details.getRentDetails();
 
         return new BookListingDTO(
                 listing.getId(),
-                listing.getBook_id(),
-                bookDAO.findBookById(listing.getBook_id()),
-                listing.getOwner_id(),
-                userDAO.getUsernameById(listing.getOwner_id()),
-                listing.getCondition(),
-                listing.getTransaction_type(),
-                listing.getStatus(),
+                listing.getBookId(),
+                bookDAO.findBookById(listing.getBookId()).get(),
+                listing.getOwnerId(),
+                userDAO.getUsernameById(listing.getOwnerId()).get(),
+                listing.getCondition().getCode(),
+                listing.getTransactionType().getCode(),
+                listing.getStatus().getCode(),
                 details != null ? details.getPrice() : null,
                 rentDetails != null ? rentDetails.getRentalDuration() : null
-//                rentDetails != null ? rentDetails.getRentalStartDate() : null
         );
     }
-
 }
 

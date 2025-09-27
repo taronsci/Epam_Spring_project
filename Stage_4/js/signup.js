@@ -37,27 +37,23 @@ document.getElementById("signupForm").addEventListener("submit", async function(
     if (userResponse.status === 201) {
       const userID = await userResponse.json();
 
-      alert(`User created with ID ${userID}`);
-
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", username);
       localStorage.setItem("email", email);
       localStorage.setItem("userID", userID);
 
-      goToDashboard();
+      alert("signup successful! Please log in.")
+      window.location.href = "login.html";
     } 
     else if (userResponse.status === 409) {
       alert("Username already exists!");
     }
-    alert("here!");
 
   } catch (err) {
     console.error(err);
     alert(err);
   }
 
-  // alert(`User "${username}" registered successfully!`);
-  // signupForm.reset();
 });
 
 function goToDashboard() {

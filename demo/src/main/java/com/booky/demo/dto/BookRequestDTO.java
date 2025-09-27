@@ -14,7 +14,8 @@ public record BookRequestDTO(
     String status,
 
     Book book,
-    Integer ownerId, //was String
+    Integer ownerId,
+    String ownerUsername,
 
     LocalDateTime createdAt,
 

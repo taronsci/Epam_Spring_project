@@ -1,48 +1,94 @@
 package com.booky.demo.service;
 
 import com.booky.demo.dao.UserDAO;
+import com.booky.demo.dao.UserRepository;
+import com.booky.demo.dto.UserDTO;
 import com.booky.demo.model.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     private final UserDAO userDAO;
+    private UserRepository userRepository;
 
-    public UserService(UserDAO userDAO) {
+    public UserService(UserDAO userDAO,UserRepository userRepository) {
         this.userDAO = userDAO;
+        this.userRepository = userRepository;
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .authorities("USER")
+                .build();
     }
 
     @Transactional
-    public Integer register(User user) {
-        Integer id = userDAO.getIdByUsername(user.getUsername());
-        if(id == null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword())); //encode password
-            id = userDAO.register(user);    //register user
-            return id;
-        }
-        return -1;
+    public Optional<Integer> register(User user) {
+        Optional<Integer> existingId = userDAO.getIdByUsername(user.getUsername());
+
+        if(existingId.isPresent())
+            return Optional.empty();
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return Optional.of(userDAO.register(user));
     }
 
     @Transactional
-    public Integer login(User user) {
-        Integer id = userDAO.getIdByUsername(user.getUsername());
-        if(id == null)
-            return -1; //username not found
+    public Optional<Integer> login(User user) {
+        Optional<Integer> idOpt = userDAO.getIdByUsername(user.getUsername());
 
+        if(idOpt.isEmpty())
+            return Optional.empty();
+
+        Integer id = idOpt.get();
         String storedHash = userDAO.getPasswordHashById(id);
-        if(storedHash == null)
-            return -1; //extra check, idk why
-
         if (!passwordEncoder.matches(user.getPassword(), storedHash))
-            return -2; // password incorrect
+            return Optional.empty();
 
-        return id;
+        return Optional.of(id);
+    }
+
+    @Transactional
+    public ResponseEntity<UserDTO> updateProfile(User user) {
+        try {
+            UserDTO updatedUser = userDAO.updateProfileDetails(user);
+            return ResponseEntity.ok(updatedUser);       //200 OK
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)         //409 Conflict
+                    .body(null);
+        }catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();    //404 Not Found
+        }
+    }
+
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }
