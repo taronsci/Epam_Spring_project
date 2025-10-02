@@ -27,10 +27,12 @@ public class BookListingService {
     }
 
     @Transactional
-    public Integer createListing(BookListingDTO dto) {
+    public Integer createListing(BookListingDTO dto, String name) {
         BookListing listing = new BookListing();
         listing.setBookId(dto.bookId());
-        listing.setOwnerId(dto.ownerId());
+
+        listing.setOwnerId(userDAO.getIdByUsername(name).get());
+
         listing.setCondition(BookCondition.valueOf(dto.condition()));
         listing.setTransactionType(TransactionType.valueOf(dto.transactionType()));
         listing.setStatus(RequestStatus.PENDING);
@@ -61,8 +63,9 @@ public class BookListingService {
     }
 
     @Transactional
-    public Page<BookListingDTO> getBookListingsById(int ownerId, int page, int size){
+    public Page<BookListingDTO> getBookListingsById(String ownerName, int page, int size){
         Pageable pageable = PageRequest.of(page,size);
+        int ownerId = userDAO.getIdByUsername(ownerName).get();
         Page<BookListing> listings = bookListingRepository.findByIdWithDetails(ownerId, pageable);
         return listings.map(this::toDTO);
     }

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +46,13 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
+    public UserDTO findUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
+        return new UserDTO(user.getId(), user.getUsername(),user.getEmail());
+    }
+
     @Transactional
     public Optional<Integer> register(User user) {
         Optional<Integer> existingId = userDAO.getIdByUsername(user.getUsername());
@@ -71,10 +80,19 @@ public class UserService implements UserDetailsService {
         return Optional.of(id);
     }
 
+
+
     @Transactional
-    public ResponseEntity<UserDTO> updateProfile(User user) {
+    public ResponseEntity<UserDTO> updateProfile(User user, String name) {
         try {
+            user.setId(userDAO.getIdByUsername(name).get());
+
             UserDTO updatedUser = userDAO.updateProfileDetails(user);
+
+            UserDetails updatedDetails = loadUserByUsername(updatedUser.username());
+            UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedDetails, updatedDetails.getPassword(), updatedDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+
             return ResponseEntity.ok(updatedUser);       //200 OK
         }catch (IllegalArgumentException e) {
             return ResponseEntity

@@ -8,7 +8,10 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 //import java.security.Principal;
 
 @RestController
@@ -23,20 +26,28 @@ public class BookRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> createRequest(@RequestBody BookRequestDTO requestDTO) {
-        Integer listingId = bookRequestService.createRequest(requestDTO);
+    public ResponseEntity<Integer> createRequest(@RequestBody BookRequestDTO requestDTO,
+                                                 Principal principal) {
+
+        Integer listingId = bookRequestService.createRequest(requestDTO, principal.getName());
         return ResponseEntity.ok(listingId);
     }
 
-    @GetMapping("/{ownerId}")
-    public PagedModel<EntityModel<BookRequestDTO>> getBooksRequestsById(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
-        Page<BookRequestDTO> requestPage = bookRequestService.getBookRequestsById(ownerId, page, size);
+    @GetMapping("/myReq")
+    public PagedModel<EntityModel<BookRequestDTO>> getBooksRequestsById(Principal principal,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "3") int size) {
+        String name = principal.getName();
+        Page<BookRequestDTO> requestPage = bookRequestService.getBookRequestsById(name, page, size);
         return assembler.toModel(requestPage);
     }
 
-    @GetMapping("/my/{ownerId}")
-    public PagedModel<EntityModel<BookRequestDTO>> getMyRequests(@PathVariable int ownerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
-        Page<BookRequestDTO> requestPage = bookRequestService.getMyRequests(ownerId, page, size);
+    @GetMapping("/my")
+    public PagedModel<EntityModel<BookRequestDTO>> getMyRequests(Principal principal,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "3") int size) {
+        String name = principal.getName();
+        Page<BookRequestDTO> requestPage = bookRequestService.getMyRequests(name, page, size);
         return assembler.toModel(requestPage);
     }
 
@@ -47,7 +58,8 @@ public class BookRequestController {
     }
 
     @PatchMapping("/{id}/status/{accepted}")
-    public ResponseEntity<Void> updateStatus(@PathVariable int id, @PathVariable String accepted) {
+    public ResponseEntity<Void> updateStatus(@PathVariable int id,
+                                             @PathVariable String accepted) {
         boolean isAccepted = Boolean.parseBoolean(accepted);
         RequestStatus status = isAccepted ? RequestStatus.ACCEPTED : RequestStatus.REJECTED;
         boolean updated = bookRequestService.updateStatus(id, status);

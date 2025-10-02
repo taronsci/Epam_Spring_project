@@ -9,6 +9,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 @RestController
 @RequestMapping("/api/listing")
@@ -22,8 +24,10 @@ public class BookListingController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Integer> createListing(@RequestBody BookListingDTO listingDTO) {
-        Integer listingId = bookListingService.createListing(listingDTO);
+    public ResponseEntity<Integer> createListing(@RequestBody BookListingDTO listingDTO,
+                                                 Principal principal) {
+        String name = principal.getName();
+        Integer listingId = bookListingService.createListing(listingDTO, name);
         return ResponseEntity.ok(listingId);
     }
 
@@ -34,11 +38,12 @@ public class BookListingController {
         return assembler.toModel(listingPage);
     }
 
-    @GetMapping("/{ownerId}")
-    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(@PathVariable int ownerId,
+    @GetMapping("/my")
+    public PagedModel<EntityModel<BookListingDTO>> getBooksListingsById(Principal principal,
                                                                         @RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "9") int size) {
-        Page<BookListingDTO> listingPage = bookListingService.getBookListingsById(ownerId, page, size);
+        String name = principal.getName();
+        Page<BookListingDTO> listingPage = bookListingService.getBookListingsById(name, page, size);
         return assembler.toModel(listingPage);
     }
 
