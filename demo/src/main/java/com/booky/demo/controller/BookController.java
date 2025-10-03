@@ -1,7 +1,9 @@
 package com.booky.demo.controller;
 
+import com.booky.demo.dto.BookDTO;
 import com.booky.demo.model.Book;
 import com.booky.demo.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +18,7 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping
-    public ResponseEntity<Integer> createBook(@RequestBody Book book) {
+    public ResponseEntity<Integer> createBook(@Valid @RequestBody BookDTO book) {
         Integer bookId = bookService.save(book);
         return ResponseEntity.ok(bookId);
     }

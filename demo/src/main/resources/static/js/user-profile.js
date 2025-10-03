@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("username").value = username;
     document.getElementById("email").value = email;
 
-    alert("loading content");
     loadMyListings();
     loadMyRequests(); //requests I have made
     loadRequestsReceived(); //requests for my listings
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadUserProfile() {
     try {
-        alert("doing this");
         const res = await fetch("/api/user/me", {
             method: "GET",
             credentials: "include"
@@ -24,8 +22,6 @@ async function loadUserProfile() {
             return;
         }
         const data = await res.json();
-        alert(data.username);
-        alert(data.email);
 
         document.getElementById("username").value = data.username;
         document.getElementById("email").value = data.email;

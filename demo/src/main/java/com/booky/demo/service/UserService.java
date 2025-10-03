@@ -50,19 +50,22 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
 
-        return new UserDTO(user.getId(), user.getUsername(),user.getEmail());
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(),null);
     }
 
     @Transactional
-    public Optional<Integer> register(User user) {
-        Optional<Integer> existingId = userDAO.getIdByUsername(user.getUsername());
+    public Optional<Integer> register(UserDTO user) {
+        Optional<Integer> existingId = userDAO.getIdByUsername(user.username());
 
         if(existingId.isPresent())
             return Optional.empty();
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = new User();
+        newUser.setUsername(user.username());
+        newUser.setEmail(user.email());
+        newUser.setPassword(passwordEncoder.encode(user.password()));
 
-        return Optional.of(userDAO.register(user));
+        return Optional.of(userDAO.register(newUser));
     }
 
     @Transactional

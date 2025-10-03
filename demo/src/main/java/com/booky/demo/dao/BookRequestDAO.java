@@ -66,11 +66,11 @@ public class BookRequestDAO {
                     return new BookRequestDTO(
                             rs.getInt("request_id"),
                             rs.getString("requester"),
-                            rs.getInt("requester_id"),
+//                            rs.getInt("requester_id"),
                             rs.getInt("listing_id"),
                             RequestStatus.valueOf(rs.getString("status")).getCode(),
                             book,
-                            rs.getInt("owner"),
+//                            rs.getInt("owner"),
                             rs.getString("ownerUsername"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
                             null
@@ -127,11 +127,11 @@ public class BookRequestDAO {
                     return new BookRequestDTO(
                             rs.getInt("request_id"),
                             rs.getString("requester"),
-                            rs.getInt("requester_id"),
+//                            rs.getInt("requester_id"),
                             rs.getInt("listing_id"),
                             RequestStatus.valueOf(rs.getString("status")).getCode(),
                             book,
-                            rs.getInt("owner"),
+//                            rs.getInt("owner"),
                             rs.getString("ownerUsername"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
                             null

@@ -4,6 +4,7 @@ import com.booky.demo.dto.UserDTO;
 import com.booky.demo.model.User;
 import com.booky.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> create(@RequestBody User user) {
+    public ResponseEntity<?> create(@Valid @RequestBody UserDTO user) {
         Optional<Integer> userId = userService.register(user);
 
         if(userId.isEmpty())

@@ -2,6 +2,7 @@ package com.booky.demo.controller;
 
 import com.booky.demo.dto.BookListingDTO;
 import com.booky.demo.service.BookListingService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -24,7 +25,7 @@ public class BookListingController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Integer> createListing(@RequestBody BookListingDTO listingDTO,
+    public ResponseEntity<Integer> createListing(@Valid @RequestBody BookListingDTO listingDTO,
                                                  Principal principal) {
         String name = principal.getName();
         Integer listingId = bookListingService.createListing(listingDTO, name);

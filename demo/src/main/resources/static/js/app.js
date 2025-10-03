@@ -69,7 +69,6 @@ async function loadBooks(page = 0) {
 }
 
 async function requestBook(bookListingDTO) {
-    alert("requesting book")
 
     if (!isAuthenticated()) {
         alert("You must be logged in to request a book.");
@@ -125,20 +124,8 @@ async function performSearch(page = 0) {
   const type = document.getElementById("filterType").value;
 
   try {
-//        const res = await fetch("/api/user/logout", {
-//            method: "POST",
-//            credentials: "include"
-//        });
-//
-//        if (res.ok) {
-//            alert("Logged out!");
-//            window.location.href = "/login.html";
-//        } else {
-//            alert("Logout failed!");
-//        }
-
         const response = await fetch(`/api/listing/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&page=${page}&size=${pageSize}`,
-         {
+        {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -201,18 +188,12 @@ async function goToProfile() {
 }
 
 async function isAuthenticated() {
-    alert("checking user");
     try {
         const res = await fetch("/api/user/check", {
             method: "GET",
             credentials: "include"
         });
-        alert(res.status);
-        if(res.ok){
-            return true;
-        }else{
-            return false;
-        }
+        return res.ok
     } catch {
         return false;
     }
@@ -230,7 +211,6 @@ registerBtn.onclick = async () => {
         alert("You must be logged in to register a book!");
         return;
     }
-    alert("opening modal");
     modal.style.display = "block";
 }
 closeBtn.onclick = () => modal.style.display = "none";
@@ -281,9 +261,17 @@ form.addEventListener("submit", async function(e) {
       credentials: "include"
     });
 
-    if(!bookResponse.ok){
-      throw new Error("Book creation failed");
-    }
+  if (bookResponse.status === 400) {
+        const errors = await bookResponse.json();
+        let msg = "Validation errors:\n";
+        for (const field in errors) {
+            msg += `${field}: ${errors[field]}\n`;
+        }
+        alert(msg);
+  }
+  else if(!bookResponse.ok){
+     throw new Error("Book creation failed");
+  }
 
     const bookId = await bookResponse.json();
 
@@ -302,13 +290,22 @@ form.addEventListener("submit", async function(e) {
       credentials: "include"
     });
 
-    if(listingResponse.status === 201){
+    if(listingResponse.status.ok){
       alert(`Book "${book.title}" with id "${bookId}" registered successfully!`);
+//      alert("Listing successfully created")
       modal.style.display = "none";
       form.reset();
     }
-    else if (!listingResponse.ok) {
-      throw new Error("Listing creation failed");
+    else if (listingResponse.status === 400) {
+        const errors = await listingResponse.json();
+        let msg = "Validation errors:\n";
+        for (const field in errors) {
+            msg += `${field}: ${errors[field]}\n`;
+        }
+        alert(msg);
+    } else if(!listingResponse.ok){
+        alert(listingResponse.status);
+        throw new Error("Listing creation failed");
     }
 
     

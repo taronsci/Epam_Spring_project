@@ -130,7 +130,8 @@ public class UserDAO {
                         new UserDTO(
                                 rs.getInt("id"),
                                 rs.getString("username"),
-                                rs.getString("email")
+                                rs.getString("email"),
+                                null
                         ), id
         );
     }

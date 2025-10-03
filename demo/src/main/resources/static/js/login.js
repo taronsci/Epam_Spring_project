@@ -8,7 +8,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     alert("Please fill in all fields!");
     return;
   } 
-  alert(`Login attempt with:\nUsername: ${username}\nPassword: ${password}`);
+//  alert(`Login attempt with:\nUsername: ${username}\nPassword: ${password}`);
 
   // Grab user data
     const user = {

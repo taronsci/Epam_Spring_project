@@ -18,7 +18,7 @@ document.getElementById("signupForm").addEventListener("submit", async function(
     return;
   }
 
-  alert(`Signup attempt:\nUsername: ${username}\nEmail: ${email}`);
+//  alert(`Signup attempt:\nUsername: ${username}\nEmail: ${email}`);
 
   // Grab user data
   const user = {
@@ -43,6 +43,14 @@ document.getElementById("signupForm").addEventListener("submit", async function(
     else if (userResponse.status === 409) {
       alert("Username already exists!");
     }
+    else if (userResponse.status === 400) {
+         const errors = await userResponse.json();
+         let msg = "Validation errors:\n";
+         for (const field in errors) {
+           msg += `${field}: ${errors[field]}\n`;
+         }
+         alert(msg);
+     }
 
   } catch (err) {
     console.error(err);

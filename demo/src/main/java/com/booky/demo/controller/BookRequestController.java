@@ -3,6 +3,7 @@ package com.booky.demo.controller;
 import com.booky.demo.dto.BookRequestDTO;
 import com.booky.demo.model.RequestStatus;
 import com.booky.demo.service.BookRequestService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -26,7 +27,7 @@ public class BookRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> createRequest(@RequestBody BookRequestDTO requestDTO,
+    public ResponseEntity<Integer> createRequest(@Valid @RequestBody BookRequestDTO requestDTO,
                                                  Principal principal) {
 
         Integer listingId = bookRequestService.createRequest(requestDTO, principal.getName());
