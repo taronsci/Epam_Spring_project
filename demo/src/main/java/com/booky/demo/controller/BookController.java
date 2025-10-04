@@ -1,7 +1,6 @@
 package com.booky.demo.controller;
 
 import com.booky.demo.dto.BookDTO;
-import com.booky.demo.model.Book;
 import com.booky.demo.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

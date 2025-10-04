@@ -7,7 +7,6 @@ import com.booky.demo.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +23,15 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserDAO userDAO;
     private UserRepository userRepository;
 
-    public UserService(UserDAO userDAO,UserRepository userRepository) {
+
+    public UserService(UserDAO userDAO, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -83,8 +82,6 @@ public class UserService implements UserDetailsService {
         return Optional.of(id);
     }
 
-
-
     @Transactional
     public ResponseEntity<UserDTO> updateProfile(User user, String name) {
         try {
@@ -112,4 +109,5 @@ public class UserService implements UserDetailsService {
             session.invalidate();
         }
     }
+
 }

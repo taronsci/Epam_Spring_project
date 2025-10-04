@@ -86,7 +86,7 @@ public class BookListingService {
         bookListingRepository.deleteById(id);
     }
 
-    private BookListingDTO toDTO(BookListing listing) {
+    BookListingDTO toDTO(BookListing listing) {
         Details details = listing.getDetails();
         RentDetails rentDetails =  null;
         if(listing.getTransactionType().equals(TransactionType.RENT))
